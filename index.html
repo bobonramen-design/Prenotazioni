@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Prenotazioni">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#3b3e43">
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAIAAACyr5FlAAACl0lEQVR4nO3dwWncQBiA0Tj4kgJcTSCYpINg8CEtuJy04IPBuISQflJArj7sdb+D49FoNXnvbFYa8flHsNLs1ecv3z7AOR/3PgEulzhI4iCJgyQOkjhI4iCJgyQOkjhI4iCJgyQOkjhI4iCJgyQOkjhI4iCJgyQOkjhI4iCJgyQOkjhI4iCJgyQOkjhI4iCJgyQOkjhI4iCJgyQOkjhI4iCJgyQOkjhI4iCJgyQOkjhI17sc9fHhzy7HPbQfP28mH/Fq8u+tyOKdZiYyLw5ZDDQnkUn3HMoYa871dENKmhGHsbGFCVfV5CBtHoexsZ2tr63JQRIHSRwkcZDEQRIHSRwkcZDEQRIHSRwkcZDEQRIHSRykzeOY/0D9/2Pra2tykGbEYXhsYcJVNTlIk+IwPMaacz0v6HXIT7e/3vRRf39/fffpHM/Mf7PZL1Kf1uaR9H8wf/ru85b92XW+3A74EAZyQ0oSB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQDry99SV8tbv2l38X9DzHca2aiO2th1kvEdtbD7PeGt2QkmxvPdJiKzU5SLa3Hmyl9ZocJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEGyvfVgK63X5CDZ3nqkxVZqcpBsbz3Memv0OuQA62VxMjuOk2USWTWLk33i4BDckJL22Z/jrJfnpzf9/fe7+43OZKzjrsvkIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIHlXlmRykMRBEgdJHCRxkMRBEgdJHCRxkMRBEgdJHCRxkMRBEgdJHCRxkMRBEgdJHCRxkMRBEgdJHCRxkMRBEgdJHCRxkMRBEgfpFRpjWbeAyf5UAAAAAElFTkSuQmCC">
+<title>Tavoli e prenotazioni</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap">
+<style>
+:root{--bg:#fff;--alt:#f3f3f3;--ink:#2b2d31;--mut:#777b82;--line:#d9dbde;--side:#3b3e43;--sideink:#e9eaec;--acc:#e0aa2e;--accink:#2b2d31;--now:#e2631f;--bad:#b3402b;--card:#fff;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1c1d20;--alt:#232529;--ink:#ececee;--mut:#9a9ea5;--line:#33363b;--side:#111214;--card:#26282c}}
+:root[data-theme="dark"]{--bg:#1c1d20;--alt:#232529;--ink:#ececee;--mut:#9a9ea5;--line:#33363b;--side:#111214;--card:#26282c}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{height:100vh;height:100dvh}
+body{background:var(--bg);color:var(--ink);font:15px/1.4 Poppins,system-ui,sans-serif;display:flex}
+button,input,select{font:inherit;color:inherit}
+html{-webkit-text-size-adjust:100%}
+body{touch-action:manipulation;-webkit-tap-highlight-color:transparent;overscroll-behavior:none}
+input,select{font-size:16px;min-height:40px}
+.b,.dn button,.plus{min-height:44px}
+dialog{max-height:92vh;overflow:auto}
+@media(min-width:900px){body{font-size:16px}.lab{font-size:1.2rem}.bar span{font-size:1.05rem}.hrs span{font-size:.85rem}}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+nav{width:76px;background:var(--side);color:var(--sideink);display:flex;flex-direction:column;align-items:center;padding:14px 0;gap:6px;flex-shrink:0}
+nav .clock{font-size:1.15rem;font-weight:500;margin-bottom:14px;text-align:center;line-height:1.1}
+nav .clock small{display:block;font-size:.6rem;color:#a4a7ad;font-weight:400}
+nav button{background:none;border:0;color:#a4a7ad;width:68px;padding:10px 2px;border-radius:10px;font-size:.68rem;display:flex;flex-direction:column;align-items:center;gap:4px}
+nav button svg{width:26px;height:26px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+nav button.on{color:#fff;background:#4b4f55}
+#app{flex:1;display:flex;flex-direction:column;min-width:0;height:100%}
+.top{display:flex;align-items:center;gap:12px;padding:12px 16px;flex-wrap:wrap}
+.top h1{margin:0;font-weight:300;font-size:1.9rem;flex:1;min-width:120px}
+.seg{display:flex;background:var(--alt);border-radius:10px;padding:3px}.seg button{border:0;background:none;padding:8px 14px;border-radius:8px;min-height:40px}.seg button.on{background:var(--side);color:#fff}
+.stats{font-size:.68rem;background:var(--alt);border-radius:6px;padding:6px 10px;line-height:1.5}
+.stats b{font-weight:600}
+.dn{display:flex;background:var(--side);border-radius:10px;overflow:hidden;color:#fff;align-items:center}
+.dn button{background:none;border:0;color:#fff;padding:10px 14px;font-size:1.1rem}
+.dn input{background:none;border:0;color:#fff;text-align:center;width:150px;color-scheme:dark}
+.plus{background:var(--acc);color:var(--accink);border:0;border-radius:10px;font-size:2rem;line-height:1;width:76px;height:46px;font-weight:300}
+#tl{flex:1;min-height:260px;overflow:auto;position:relative;border-top:1px solid var(--line)}
+.in{position:relative}
+.hd{display:flex;position:sticky;top:0;z-index:5;background:var(--bg);height:34px;border-bottom:1px solid var(--line)}
+.corner{width:64px;flex-shrink:0;position:sticky;left:0;z-index:6;background:var(--bg)}
+.hrs{position:relative}
+.hrs span{position:absolute;top:8px;font-weight:600;font-size:.72rem;transform:translateX(4px)}
+.r{display:flex;height:44px;border-bottom:1px solid var(--line)}
+.lab{width:64px;flex-shrink:0;position:sticky;left:0;z-index:4;background:var(--bg);font-size:1.05rem;font-weight:400;padding:2px 6px;border-right:1px solid var(--line);overflow:hidden;white-space:nowrap}
+.lab small{font-size:.62rem;color:var(--mut);margin-left:4px}
+.cells{position:relative;cursor:cell;overflow:hidden}
+.bar{-webkit-touch-callout:none;touch-action:none;user-select:none;-webkit-user-select:none;position:absolute;top:3px;bottom:3px;background:var(--card);border:1px solid #9a9ea5;border-radius:7px;display:flex;align-items:center;overflow:hidden;cursor:pointer;padding:0;text-align:left}
+.bar i{font-style:normal;background:var(--acc);color:var(--accink);min-width:24px;font-size:.85rem;height:100%;display:flex;align-items:center;justify-content:center;font-weight:500;flex-shrink:0}
+.bar span{padding:0 7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:1rem}
+.bar.un{border-style:dashed}
+.bar.late,.bar.jn.late{background:#f6d4d3;border-color:#d9534f;color:#1d2b26;animation:late 1.6s ease-in-out infinite}
+.lab.late{background:#f6d4d3;color:#8f1f1b}.lab.late small{color:#8f1f1b}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .bar.late,:root:not([data-theme="light"]) .bar.jn.late{background:#46211f;color:#ececee}:root:not([data-theme="light"]) .lab.late{background:#46211f;color:#f2a29e}:root:not([data-theme="light"]) .lab.late small{color:#f2a29e}}
+:root[data-theme="dark"] .bar.late{background:#46211f;color:#ececee}
+@keyframes late{0%,100%{box-shadow:0 0 0 0 #d9534f66}50%{box-shadow:0 0 9px 2px #d9534f99}}
+@media (prefers-reduced-motion:reduce){.bar.late{animation:none}}
+.bar.arr{background:#d7efdc;border-color:#3e9a57;color:#1d2b26}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .bar.arr{background:#1f3a28;color:#ececee}}
+:root[data-theme="dark"] .bar.arr{background:#1f3a28;color:#ececee}
+#toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--side);color:#fff;border-radius:10px;padding:10px 14px;display:flex;gap:12px;align-items:center;z-index:50;max-width:92vw;font-size:.9rem;box-shadow:0 6px 20px #0006}
+#toast[hidden]{display:none}#toast button{background:var(--acc);color:var(--accink);border:0;border-radius:7px;padding:5px 12px;font-weight:500}
+.bar.jn{border-style:dashed;background:repeating-linear-gradient(45deg,var(--alt) 0 6px,var(--card) 6px 12px)}
+.ck{display:inline-flex;gap:6px;align-items:center;border:1px solid var(--line);border-radius:99px;padding:4px 11px;margin:0 6px 6px 0;font-size:.85rem;color:var(--ink);cursor:pointer}.ck input{width:auto;margin:0}
+.now{position:absolute;top:0;bottom:0;width:2px;background:var(--now);z-index:3;pointer-events:none}
+.now:before{content:"";position:absolute;top:30px;left:-4px;width:10px;height:10px;border-radius:50%;background:var(--now)}
+.pg{padding:16px;overflow:auto;flex:1}
+.card{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:14px;margin-bottom:14px;max-width:720px}
+.card h2{margin:0 0 10px;font-size:1.05rem;font-weight:500}
+.it{display:flex;gap:10px;align-items:center;padding:9px 0;border-top:1px solid var(--line)}
+.it .g{flex:1;min-width:0}.mut{color:var(--mut);font-size:.85rem}
+.b{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:7px 12px}
+.b.p{background:var(--acc);border-color:var(--acc);color:var(--accink);font-weight:500}
+.b.d{color:var(--bad)}
+dialog{border:0;border-radius:14px;background:var(--card);color:var(--ink);width:min(440px,94vw);padding:20px}
+dialog::backdrop{background:#0008}
+dialog h2{margin:0 0 12px;font-weight:500;font-size:1.2rem}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+label{display:block;font-size:.76rem;color:var(--mut);margin-bottom:2px}
+input,select{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg)}
+.acts{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}.acts .sp{flex:1}
+.empty{color:var(--mut);padding:12px 0}
+@media(max-width:600px){nav{width:58px}nav button{width:54px;font-size:.58rem}.top h1{font-size:1.4rem}.dn input{width:120px}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="clock"><span id="clk">--:--</span><small id="cd"></small></div>
+  <button data-v="tl" class="on"><svg viewBox="0 0 24 24"><path d="M3 9h18M5 9v10M19 9v10M8 9V5h8v4M9 14h6"/></svg>Tavoli</button>
+  <button data-v="list"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>Prenotazioni</button>
+  <button data-v="set"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></svg>Gestione</button>
+</nav>
+<div id="app">
+  <div class="top">
+    <h1 id="ttl">Tavoli</h1>
+    <div class="seg" id="seg"><button data-s="p">Pranzo</button><button data-s="c">Cena</button><button data-s="a">Tutto</button></div>
+    <div class="stats"><div><b id="s1"></b> assegnato</div><div><b id="s2"></b> capienza</div><div><b id="s3"></b> arrivati</div><div id="sy" style="color:var(--mut)"></div></div>
+    <div class="dn"><button id="prev" aria-label="Giorno precedente">‹</button><input type="date" id="date" aria-label="Data"><button id="next" aria-label="Giorno successivo">›</button></div>
+    <button class="plus" id="add" aria-label="Nuova prenotazione">+</button>
+  </div>
+  <div id="main" style="flex:1;min-height:0;display:flex;flex-direction:column"></div>
+</div>
+
+<dialog id="dlg">
+  <h2 id="dt">Nuova prenotazione</h2>
+  <div class="g2"><div><label for="rn">Nome</label><input id="rn" list="cl" autocomplete="off"><datalist id="cl"></datalist></div><div><label for="rp">Telefono</label><input id="rp" type="tel"></div></div>
+  <div class="g2"><div><label for="rh">Ora</label><input id="rh" type="time" step="900"></div><div><label for="rg">Persone</label><input id="rg" type="number" min="1"></div></div>
+  <div class="g2"><div><label for="rd">Durata</label><select id="rd"></select></div><div><label for="rt">Tavolo</label><select id="rt"></select></div></div>
+  <div style="margin-bottom:10px"><label class="ck"><input type="checkbox" id="ra"> Cliente arrivato</label></div>
+  <div style="margin-bottom:10px"><label>Unisci altri tavoli</label><div id="mg"></div></div>
+  <div><label for="ro">Note</label><input id="ro"></div>
+  <div id="er" class="mut" style="color:var(--bad);margin-top:8px"></div>
+  <div class="acts"><button class="b d" id="del">Elimina</button><span class="sp"></span><button class="b" id="can">Annulla</button><button class="b p" id="ok">Salva</button></div>
+</dialog>
+<div id="toast" hidden><span id="tm"></span><button id="tu">Annulla</button></div>
+<input type="file" id="cfile" accept=".csv,.vcf,text/csv,text/vcard,text/x-vcard" hidden>
+<input type="file" id="file" accept="application/json" hidden>
+
+<script>
+const KEY="prenotazioni-ristorante-v1",LW=64;let START=0,END=0,PX=2.5,SV={p:[12,15],c:[19,23]},svc="a";
+try{const g=JSON.parse(localStorage.getItem("pr-svc")||"null");if(g&&g.p&&g.c)SV=g}catch(e){}
+const CUT=()=>(SV.p[1]+SV.c[0])*30;
+const cls=t=>{const[a,b]=t.split(":").map(Number);return a*60+b<CUT()?"p":"c"};
+function applySvc(){const[a,b]=svc==="p"?SV.p:svc==="c"?SV.c:[SV.p[0],SV.c[1]];START=a*60;END=b*60}
+svc=new Date().getHours()*60<CUT()?"p":"c";applySvc();
+let S={tables:[],res:[]},view="tl",editing=null;
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,5);
+const iso=d=>new Date(d.getTime()-d.getTimezoneOffset()*6e4).toISOString().slice(0,10);
+const mins=t=>{const[a,b]=t.split(":").map(Number);return a*60+b};
+const hm=m=>String(Math.floor(m/60)).padStart(2,"0")+":"+String(m%60).padStart(2,"0");
+const day=()=>$("date").value;
+function load(){try{const r=localStorage.getItem(KEY);if(r){S=JSON.parse(r);return}}catch(e){}
+  S={tables:Array.from({length:9},(_,i)=>({id:uid()+i,name:String(i+1).padStart(2,"0"),seats:4})),res:[]}}
+let CT=[];try{CT=JSON.parse(localStorage.getItem("pr-contacts")||"[]")}catch(e){}
+function parseCsv(t){const rows=[];let r=[],c="",q=false;for(let i=0;i<t.length;i++){const ch=t[i];
+  if(q){if(ch==='"'){if(t[i+1]==='"'){c+='"';i++}else q=false}else c+=ch}
+  else if(ch==='"')q=true;else if(ch===","){r.push(c);c=""}
+  else if(ch==="\n"||ch==="\r"){if(ch==="\r"&&t[i+1]==="\n")i++;r.push(c);c="";if(r.some(x=>x))rows.push(r);r=[]}else c+=ch}
+  if(c||r.length){r.push(c);rows.push(r)}return rows}
+function parseContacts(t){
+  t=t.replace(/^\uFEFF/,"");const out=[];
+  if(/BEGIN:VCARD/i.test(t)){
+    t.replace(/\r/g,"").replace(/\n[ \t]/g,"").split(/BEGIN:VCARD/i).slice(1).forEach(v=>{
+      let n=((v.match(/^FN[^:\n]*:(.*)$/mi)||[])[1]||"").trim();
+      if(!n){const m=v.match(/^N[^:\n]*:(.*)$/mi);if(m)n=m[1].split(";").map(x=>x.trim()).filter(Boolean).reverse().join(" ")}
+      const p=((v.match(/^TEL[^:\n]*:(.*)$/mi)||[])[1]||"").trim();
+      if(n)out.push({n,p})});
+  }else{
+    const rows=parseCsv(t);if(rows.length<2)return out;
+    const h=rows[0].map(x=>x.trim().toLowerCase()),f=re=>h.findIndex(x=>re.test(x));
+    const ni=f(/^name$/),fi=f(/^(first name|given name|nome)$/),li=f(/^(last name|family name|cognome)$/),pi=f(/(phone|telefono).*(value|valore)|^(phone|telefono)/);
+    rows.slice(1).forEach(r=>{
+      let n=ni>=0?(r[ni]||"").trim():"";
+      if(!n)n=[fi>=0?r[fi]:"",li>=0?r[li]:""].map(x=>(x||"").trim()).filter(Boolean).join(" ");
+      const p=pi>=0?(r[pi]||"").split(":::")[0].trim():"";
+      if(n)out.push({n,p})});
+  }
+  const seen=new Set();return out.filter(c=>{const k=c.n.toLowerCase()+"|"+c.p;if(seen.has(k))return false;seen.add(k);return true}).sort((a,b)=>a.n.localeCompare(b.n));
+}
+function drawCl(){const q=$("rn").value.trim().toLowerCase(),d=q.replace(/\D/g,"");
+  const m=q.length<2?[]:CT.filter(c=>c.n.toLowerCase().includes(q)||(d.length>=3&&c.p.replace(/\D/g,"").includes(d))).slice(0,8);
+  $("cl").innerHTML=m.map(c=>`<option value="${esc(c.n)}" label="${esc(c.p)}"></option>`).join("")}
+$("rn").oninput=drawCl;
+$("rn").onchange=()=>{const c=CT.find(x=>x.n.toLowerCase()===$("rn").value.trim().toLowerCase());if(c&&c.p&&!$("rp").value.trim())$("rp").value=c.p};
+$("rp").onchange=()=>{const d=$("rp").value.replace(/\D/g,"");if(d.length<6||$("rn").value.trim())return;const c=CT.find(x=>x.p.replace(/\D/g,"").endsWith(d.slice(-9)));if(c)$("rn").value=c.n};
+let ref=null,busy=false,again=false,lastVer="";
+const setSy=t=>{const e=document.getElementById("sy");if(e)e.textContent=t};
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}push()}
+function push(){
+  if(!ref)return;if(busy){again=true;return}
+  busy=true;lastVer=uid();
+  ref.set({tables:S.tables,res:S.res,ver:lastVer}).then(()=>setSy("Salvato online")).catch(e=>setSy(e&&e.code==="invalid_argument"?"Sola lettura: non puoi modificare":"Online non riuscito, riprovo al prossimo salvataggio")).finally(()=>{busy=false;if(again){again=false;push()}});
+}
+function initDb(){
+  if(!window.claude||!claude.use){setSy("Solo su questo dispositivo");return}
+  claude.use("db").then(db=>{
+    if(!db){setSy("Solo su questo dispositivo");return}
+    ref=db.doc("app/state");
+    ref.onSnapshot(snap=>{
+      if(!snap.exists){push();return}
+      const d=JSON.parse(JSON.stringify(snap.data()));
+      if(d.ver===lastVer)return;
+      if(!Array.isArray(d.tables)||!Array.isArray(d.res))return;
+      S={tables:d.tables,res:d.res};
+      try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
+      setSy("Salvato online");
+      if(!$("dlg").open&&!drag)render();
+    },()=>setSy("Online non disponibile"));
+  }).catch(()=>setSy("Solo su questo dispositivo"));
+}
+const dur=r=>Number(r.dur)||120;
+const tn=id=>(S.tables.find(t=>t.id===id)||{name:"Da assegnare"}).name;
+let lateSig="";
+const nowM=()=>{const d=new Date();return d.getHours()*60+d.getMinutes()};
+const isLate=r=>r.date===iso(new Date())&&!r.arr&&nowM()-mins(r.time)>=15&&nowM()<mins(r.time)+dur(r);
+const tids=r=>(r.tbs&&r.tbs.length?r.tbs:(r.table?[r.table]:[])).filter(id=>S.tables.some(t=>t.id===id));
+const tnames=r=>{const a=tids(r).map(id=>tn(id));return a.length?a.join(" + "):"Da assegnare"};
+const dayRes=()=>S.res.filter(r=>r.date===day()&&(svc==="a"||cls(r.time)===svc)).sort((a,b)=>a.time.localeCompare(b.time));
+
+function stats(){
+  const rs=dayRes(),as=rs.filter(r=>tids(r).length).length;
+  const seats=S.tables.reduce((n,t)=>n+Number(t.seats),0),cov=rs.reduce((n,r)=>n+Number(r.guests),0);
+  $("s1").textContent=as+"/"+rs.length;$("s2").textContent=(seats?Math.round(cov/seats*100):0)+"%";$("s3").textContent=rs.filter(r=>r.arr).length+"/"+rs.length;
+}
+function barHtml(r,un,tid){
+  const ids=tids(r),jn=tid&&ids.length>1&&ids[0]!==tid,lbl=(r.arr?"✓ ":isLate(r)?"⏰ ":"")+esc(r.name)+(jn?" (unito)":ids.length>1?" +"+(ids.length-1):"");
+  const l=Math.max(0,(mins(r.time)-START)*PX),w=Math.max(24,dur(r)*PX-(mins(r.time)<START?(START-mins(r.time))*PX:0));
+  return `<button class="bar${un?" un":""}${jn?" jn":""}${r.arr?" arr":""}${isLate(r)?" late":""}" data-r="${r.id}" style="left:${l}px;width:${w}px" title="${esc(r.name)} ${r.time}"><i>${r.guests}</i><span>${lbl}</span></button>`;
+}
+function renderTL(){
+  const mw=Math.max($("main").clientWidth,320),mh=Math.max($("main").clientHeight,300);
+  PX=Math.max(.3,(mw-LW-2)/(END-START));
+  const RH=Math.max(30,Math.min(innerWidth>=900?60:44,Math.floor((mh-36)/(S.tables.length+1))));
+  let lab=30;while(PX*lab<46&&lab<120)lab*=2;
+  const W=(END-START)*PX,rs=dayRes();
+  let hrs="";for(let m=START;m<END;m+=lab)hrs+=`<span style="left:${(m-START)*PX}px${m%60?";font-weight:400;opacity:.75":""}">${hm(m)}</span>`;
+  const grid=`background-image:repeating-linear-gradient(90deg,var(--line) 0 1px,transparent 1px ${PX*60}px),repeating-linear-gradient(90deg,var(--alt) 0 ${PX*30}px,transparent ${PX*30}px ${PX*60}px)`;
+  const row=(lab,id,list,un)=>`<div class="r" style="height:${RH}px"><div class="lab${list.some(isLate)?" late":""}">${lab}</div><div class="cells" data-t="${id}" style="width:${W}px;${grid}">${list.map(r=>barHtml(r,un,id)).join("")}</div></div>`;
+  const un=rs.filter(r=>!tids(r).length);
+  let h=`<div id="tl"><div class="in" style="width:${W+LW}px"><div class="hd"><div class="corner"></div><div class="hrs" style="width:${W}px">${hrs}</div></div>`;
+  if(un.length)h+=row('<small style="margin:0">Da assegnare</small>',"",un,true);
+  h+=S.tables.map(t=>row(esc(t.name)+`<small>×${t.seats}</small>`,t.id,rs.filter(r=>tids(r).includes(t.id)))).join("");
+  h+=`<div class="now" id="now" hidden></div></div></div>`;
+  if(!S.tables.length)h='<div class="pg"><div class="empty">Nessun tavolo. <button class="b p" id="seed">Crea 9 tavoli</button> oppure aggiungili in Gestione.</div></div>';
+  $("main").innerHTML=h;placeNow();
+}
+function placeNow(){
+  const n=$("now"),d=new Date();if(!n)return;
+  const m=d.getHours()*60+d.getMinutes();
+  n.hidden=!(day()===iso(d)&&m>=START&&m<END);n.style.left=(LW+(m-START)*PX)+"px";
+}
+function renderList(){
+  const rs=dayRes();
+  $("main").innerHTML=`<div class="pg"><div class="card"><h2>${rs.length} prenotazioni · ${rs.reduce((n,r)=>n+Number(r.guests),0)} coperti</h2>`+
+  (rs.length?rs.map(r=>`<div class="it"><b style="min-width:52px">${r.time}</b><div class="g"><b>${esc(r.name)}</b> · ${r.guests} pers.<div class="mut">${esc(tids(r).length?"Tavolo "+tnames(r):"Da assegnare")}${r.phone?" · "+esc(r.phone):""}${r.notes?" · "+esc(r.notes):""}</div></div><button class="b${r.arr?" p":""}" data-arr="${r.id}">${r.arr?"Arrivato ✓":"Arrivato"}</button><button class="b" data-r="${r.id}">Modifica</button></div>`).join(""):'<div class="empty">Nessuna prenotazione. Premi + per aggiungerne una.</div>')+`</div></div>`;
+}
+const hopt=(v,a,b)=>Array.from({length:(b-a)*2+1},(_,i)=>a+i/2).map(h=>`<option value="${h}"${h===v?" selected":""}>${hm(h*60)}</option>`).join("");
+function renderSet(){
+  $("main").innerHTML=`<div class="pg"><div class="card"><h2>Tavoli</h2>`+
+  S.tables.map(t=>`<div class="it"><input data-n="${t.id}" value="${esc(t.name)}" aria-label="Nome tavolo" style="flex:1;min-width:0"><input data-s="${t.id}" type="number" min="1" value="${t.seats}" aria-label="Posti" style="width:72px"><button class="b d" data-td="${t.id}">Elimina</button></div>`).join("")+
+  `<div class="g2" style="margin-top:12px"><div><label for="tn">Nome tavolo</label><input id="tn" placeholder="10"></div><div><label for="ts">Posti</label><input id="ts" type="number" min="1" value="4"></div></div><button class="b p" id="addT">Aggiungi tavolo</button></div>
+  <div class="card"><h2>Pranzo e cena</h2><div class="g2"><div><label for="sp0">Pranzo dalle</label><select id="sp0" data-sv>${hopt(SV.p[0],6,22)}</select></div><div><label for="sp1">alle</label><select id="sp1" data-sv>${hopt(SV.p[1],7,23)}</select></div><div><label for="sc0">Cena dalle</label><select id="sc0" data-sv>${hopt(SV.c[0],10,23)}</select></div><div><label for="sc1">alle</label><select id="sc1" data-sv>${hopt(SV.c[1],11,24)}</select></div></div><p class="mut" style="margin:0">Le prenotazioni prima delle ${hm(CUT())} contano come pranzo, le altre come cena.</p></div>
+  <div class="card"><h2>Prenotazioni passate</h2><p class="mut" style="margin:0 0 10px">${S.res.filter(r=>r.date<iso(new Date())).length} prenotazioni precedenti a oggi.</p><button class="b d" id="clr">Elimina prenotazioni passate</button></div>
+  <div class="card"><h2>Rubrica Google Contatti</h2><p class="mut" style="margin:0 0 10px">${CT.length} contatti importati. Su contacts.google.com scegli Esporta, poi formato Google CSV o vCard, e carica qui il file. Scrivendo un nome nella prenotazione vedi i suggerimenti e il telefono si compila da solo. La rubrica resta solo su questo dispositivo.</p><button class="b" id="cti">Importa contatti</button> <button class="b d" id="ctd">Rimuovi rubrica</button><div class="mut" id="ctm" style="margin-top:8px"></div></div>
+  <div class="card"><h2>Copia di sicurezza</h2><p class="mut" style="margin:0 0 10px">I dati restano in questo browser. Scarica una copia per non perderli o per usarli su un altro dispositivo.</p><button class="b" id="exp">Scarica copia</button> <button class="b" id="imp">Carica copia</button><div class="mut" id="ms" style="margin-top:8px"></div></div></div>`;
+}
+function render(){
+  $("ttl").textContent={tl:"Tavoli",list:"Prenotazioni",set:"Gestione"}[view];
+  document.querySelectorAll("nav [data-v]").forEach(b=>b.classList.toggle("on",b.dataset.v===view));
+  document.querySelectorAll("#seg [data-s]").forEach(b=>b.classList.toggle("on",b.dataset.s===svc));
+  stats();({tl:renderTL,list:renderList,set:renderSet})[view]();
+}
+function drawMg(sel){const p=$("rt").value;
+  $("mg").innerHTML=!p?'<span class="mut">Scegli prima il tavolo principale.</span>':(S.tables.filter(t=>t.id!==p).map(t=>`<label class="ck"><input type="checkbox" value="${t.id}"${sel.includes(t.id)?" checked":""}>${esc(t.name)} · ${t.seats}</label>`).join("")||'<span class="mut">Nessun altro tavolo.</span>')}
+const getMg=()=>[...document.querySelectorAll("#mg input:checked")].map(i=>i.value);
+function openDlg(r,t,time){
+  editing=r?r.id:null;$("er").textContent="";$("er").dataset.w="";$("del").dataset.c="";$("del").textContent="Elimina";
+  $("dt").textContent=r?"Modifica prenotazione":"Nuova prenotazione";$("del").hidden=!r;
+  $("rt").innerHTML='<option value="">Da assegnare</option>'+S.tables.map(x=>`<option value="${x.id}">${esc(x.name)} (${x.seats} posti)</option>`).join("");
+  $("rd").innerHTML=[30,60,90,120,150,180,210,240].map(m=>`<option value="${m}">${m<60?m+" min":(m/60+"").replace(".",",")+" h"}</option>`).join("");
+  $("rn").value=r?r.name:"";$("rp").value=r?r.phone:"";$("rh").value=r?r.time:(time||(svc==="p"?"13:00":"20:00"));
+  $("rg").value=r?r.guests:2;$("rd").value=r?dur(r):120;$("rt").value=r?r.table:(t||"");$("ro").value=r?r.notes:"";drawMg(r?tids(r).slice(1):[]);$("ra").checked=!!(r&&r.arr);
+  $("dlg").showModal();
+}
+$("rt").onchange=()=>drawMg(getMg());
+$("ok").onclick=()=>{
+  const r={id:editing||uid(),date:day(),time:$("rh").value,name:$("rn").value.trim(),phone:$("rp").value.trim(),guests:Math.max(1,+$("rg").value||1),dur:+$("rd").value,table:$("rt").value,notes:$("ro").value.trim(),arr:$("ra").checked};
+  r.tbs=r.table?[r.table,...getMg().filter(x=>x!==r.table)]:[];
+  if(!r.name||!r.time){$("er").textContent="Inserisci almeno nome e ora.";return}
+  const cap=r.tbs.reduce((n,id)=>n+Number((S.tables.find(x=>x.id===id)||{}).seats||0),0);
+  const clash=r.tbs.length&&S.res.some(x=>x.id!==r.id&&x.date===r.date&&tids(x).some(id=>r.tbs.includes(id))&&mins(x.time)<mins(r.time)+r.dur&&mins(r.time)<mins(x.time)+dur(x));
+  let m="";if(clash)m+="Il tavolo è già occupato in quell'orario. ";if(r.tbs.length&&r.guests>cap)m+=`${r.tbs.length>1?"I tavoli uniti hanno":"Il tavolo ha"} ${cap} posti per ${r.guests} persone. `;
+  if(m&&$("er").dataset.w!==m){$("er").dataset.w=m;$("er").textContent=m+"Premi Salva di nuovo per confermare.";return}
+  const i=S.res.findIndex(x=>x.id===r.id);if(i>=0)S.res[i]=r;else S.res.push(r);if(svc!=="a"){svc=cls(r.time);applySvc()}
+  save();$("dlg").close();render();
+};
+$("can").onclick=()=>$("dlg").close();
+$("del").onclick=()=>{if($("del").dataset.c!=="1"){$("del").dataset.c="1";$("del").textContent="Conferma eliminazione";return}S.res=S.res.filter(x=>x.id!==editing);save();$("dlg").close();render()};
+$("seg").onclick=e=>{const b=e.target.closest("[data-s]");if(b){svc=b.dataset.s;applySvc();render()}};
+$("add").onclick=()=>openDlg();
+document.querySelector("nav").onclick=e=>{const b=e.target.closest("[data-v]");if(b){view=b.dataset.v;render()}};
+$("main").onclick=e=>{
+  if(wasDrag)return;
+  const ar=e.target.dataset.arr||(e.target.closest(".bar i")&&e.target.closest(".bar").dataset.r);
+  if(ar){const r=S.res.find(x=>x.id===ar);if(r){r.arr=!r.arr;save();render();toast(r.arr?`${r.name} è arrivato`:`${r.name}: arrivo annullato`,()=>{r.arr=!r.arr;save();render()})}return}
+  const rid=e.target.closest("[data-r]");
+  if(rid){openDlg(S.res.find(x=>x.id===rid.dataset.r));return}
+  const c=e.target.closest(".cells");
+  if(c&&c.dataset.t){const x=e.clientX-c.getBoundingClientRect().left;openDlg(null,c.dataset.t,hm(START+Math.round(x/PX/15)*15))}
+  const td=e.target.dataset.td;
+  if(td){if(e.target.dataset.c!=="1"){const n=S.res.filter(r=>tids(r).includes(td)).length;e.target.dataset.c="1";e.target.textContent=n?`Conferma (${n} prenotazioni da assegnare)`:"Conferma eliminazione";return}
+    S.res.forEach(r=>{if(tids(r).includes(td)){r.tbs=tids(r).filter(x=>x!==td);r.table=r.tbs[0]||""}});S.tables=S.tables.filter(t=>t.id!==td);save();render()}
+  if(e.target.id==="cti"){$("cfile").click();return}
+  if(e.target.id==="ctd"){if(e.target.dataset.c!=="1"){e.target.dataset.c="1";e.target.textContent="Conferma rimozione";return}CT=[];try{localStorage.removeItem("pr-contacts")}catch(x){}render();return}
+  if(e.target.id==="seed"){S.tables=Array.from({length:9},(_,i)=>({id:uid()+i,name:String(i+1).padStart(2,"0"),seats:4}));save();render();return}
+  if(e.target.id==="clr"){if(e.target.dataset.c!=="1"){e.target.dataset.c="1";e.target.textContent="Conferma eliminazione";return}
+    const t=iso(new Date());S.res=S.res.filter(r=>r.date>=t);save();render()}
+  if(e.target.id==="addT"){const n=$("tn").value.trim();if(!n){$("tn").focus();return}S.tables.push({id:uid(),name:n,seats:Math.max(1,+$("ts").value||2)});save();render()}
+  if(e.target.id==="exp"){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(S,null,1)],{type:"application/json"}));a.download="prenotazioni-"+iso(new Date())+".json";a.click()}
+  if(e.target.id==="imp")$("file").click();
+};
+$("main").onchange=e=>{
+  if(e.target.hasAttribute&&e.target.hasAttribute("data-sv")){let p0=+$("sp0").value,p1=+$("sp1").value,c0=+$("sc0").value,c1=+$("sc1").value;
+    if(p1<=p0)p1=Math.min(23,p0+1);if(c0<p1)c0=Math.min(23,p1);if(c1<=c0)c1=Math.min(24,c0+1);
+    SV={p:[p0,p1],c:[c0,c1]};try{localStorage.setItem("pr-svc",JSON.stringify(SV))}catch(x){}applySvc();render();return}
+  const d=e.target.dataset,t=S.tables.find(x=>x.id===(d.n||d.s));if(!t)return;
+  if(d.n)t.name=e.target.value.trim()||t.name;if(d.s)t.seats=Math.max(1,+e.target.value||t.seats);save()};
+$("cfile").onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();
+  r.onload=()=>{let n=0;try{CT=parseContacts(String(r.result));n=CT.length;try{localStorage.setItem("pr-contacts",JSON.stringify(CT))}catch(x){}}catch(x){n=0}
+    render();$("ctm").textContent=n?`${n} contatti importati.`:"Nessun contatto riconosciuto. Esporta da Google Contatti in formato Google CSV o vCard."};
+  r.readAsText(f);e.target.value=""};
+$("file").onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();
+  r.onload=()=>{try{const d=JSON.parse(r.result);if(!Array.isArray(d.tables)||!Array.isArray(d.res))throw 0;S=d;save();render();$("ms").textContent="Copia caricata."}catch(x){$("ms").textContent="File non valido."}};
+  r.readAsText(f);e.target.value=""};
+const shift=n=>{const d=new Date(day()+"T12:00");d.setDate(d.getDate()+n);$("date").value=iso(d);render()};
+$("prev").onclick=()=>shift(-1);$("next").onclick=()=>shift(1);$("date").onchange=render;
+function tick(){const d=new Date();$("clk").textContent=hm(d.getHours()*60+d.getMinutes());$("cd").textContent=d.toLocaleDateString("it-IT",{day:"2-digit",month:"2-digit",year:"2-digit"});placeNow();
+  const sg=S.res.filter(isLate).map(r=>r.id).join();
+  if(sg!==lateSig){lateSig=sg;if(view!=="set"&&!$("dlg").open&&!document.querySelector(".bar[style*=translate]"))render()}}
+load();$("date").value=iso(new Date());render();tick();setInterval(tick,30000);
+let drag=null,wasDrag=false,tt;
+function toast(msg,undo){$("tm").textContent=msg;$("tu").onclick=()=>{undo();$("toast").hidden=true};$("toast").hidden=false;clearTimeout(tt);tt=setTimeout(()=>$("toast").hidden=true,7000)}
+$("main").addEventListener("pointerdown",e=>{
+  const b=e.target.closest(".bar");if(!b||e.button>0)return;
+  drag={b,id:b.dataset.r,from:b.parentElement.dataset.t,x:e.clientX,y:e.clientY,on:false};
+  try{b.setPointerCapture(e.pointerId)}catch(x){}
+});
+addEventListener("pointermove",e=>{
+  if(!drag)return;const dx=e.clientX-drag.x,dy=e.clientY-drag.y;
+  if(!drag.on){if(Math.hypot(dx,dy)<6)return;drag.on=true;Object.assign(drag.b.style,{zIndex:9,opacity:.85,boxShadow:"0 4px 14px #0006"})}
+  drag.b.style.transform=`translate(${dx}px,${dy}px)`;
+});
+addEventListener("pointercancel",()=>{if(drag){drag=null;render()}});
+addEventListener("pointerup",e=>{
+  if(!drag)return;const d=drag;drag=null;if(!d.on)return;
+  wasDrag=true;setTimeout(()=>wasDrag=false,60);
+  const i=S.res.findIndex(x=>x.id===d.id);if(i<0){render();return}
+  const r=S.res[i],prev=JSON.parse(JSON.stringify(r));
+  d.b.style.display="none";const el=document.elementFromPoint(e.clientX,e.clientY);d.b.style.display="";
+  const row=el&&el.closest(".cells");
+  const nt=Math.max(START,Math.min(END-15,mins(r.time)+Math.round((e.clientX-d.x)/PX/15)*15));
+  r.time=hm(nt);
+  if(row&&row.dataset.t!==d.from){const t=row.dataset.t,cur=tids(r);
+    r.tbs=!t?[]:(!d.from||!cur.length?[t]:[...new Set(cur.map(id=>id===d.from?t:id))]);r.table=r.tbs[0]||""}
+  const clash=tids(r).length&&S.res.some(x=>x.id!==r.id&&x.date===r.date&&tids(x).some(id=>tids(r).includes(id))&&mins(x.time)<mins(r.time)+dur(r)&&mins(r.time)<mins(x.time)+dur(x));
+  save();render();
+  toast(`${r.name}: ${r.time}, ${tids(r).length?"tavolo "+tnames(r):"da assegnare"}${clash?" · attenzione, tavolo già occupato":""}`,()=>{const j=S.res.findIndex(x=>x.id===prev.id);if(j>=0)S.res[j]=prev;save();render()});
+});
+initDb();
+addEventListener("load",()=>{if(view==="tl")render()});
+setTimeout(()=>{if(view==="tl")render()},400);
+addEventListener("resize",()=>{if(view==="tl")render()});
+const tl=$("tl");if(tl){const d=new Date(),m=day()===iso(d)?d.getHours()*60+d.getMinutes()-60:18*60-60;tl.scrollLeft=Math.max(0,(m-START)*PX)}
+</script>
+</body>
+</html>
