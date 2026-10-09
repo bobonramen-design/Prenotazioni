@@ -38,6 +38,7 @@ nav button.on{color:#fff;background:#4b4f55}
 #app{flex:1;display:flex;flex-direction:column;min-width:0;height:100%}
 .top{display:flex;align-items:center;gap:12px;padding:12px 16px;flex-wrap:wrap}
 .top h1{margin:0;font-weight:300;font-size:1.9rem;flex:1;min-width:120px}
+#lg{position:fixed;inset:0;z-index:100;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px}#lg[hidden]{display:none}.lgc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;width:min(380px,100%)}.lgc h2{margin:0 0 6px;font-weight:500}
 .seg{display:flex;background:var(--alt);border-radius:10px;padding:3px}.seg button{border:0;background:none;padding:8px 14px;border-radius:8px;min-height:40px}.seg button.on{background:var(--side);color:#fff}
 .stats{font-size:.68rem;background:var(--alt);border-radius:6px;padding:6px 10px;line-height:1.5}
 .stats b{font-weight:600}
@@ -94,6 +95,11 @@ input,select{width:100%;padding:8px 10px;border:1px solid var(--line);border-rad
 </style>
 </head>
 <body>
+<div id="lg" hidden><div class="lgc"><h2>Accedi</h2><p class="mut" style="margin:0 0 12px">Entra con l'email e la password del ristorante per vedere le stesse prenotazioni su tutti i dispositivi.</p>
+<label for="lgm">Email</label><input id="lgm" type="email" autocomplete="username" inputmode="email" style="margin-bottom:10px">
+<label for="lgp">Password</label><input id="lgp" type="password" autocomplete="current-password">
+<div id="lge" style="color:var(--bad);min-height:1.4em;margin:8px 0;font-size:.88rem"></div>
+<button class="b p" id="lgb" style="width:100%">Accedi</button></div></div>
 <nav>
   <div class="clock"><span id="clk">--:--</span><small id="cd"></small></div>
   <button data-v="tl" class="on"><svg viewBox="0 0 24 24"><path d="M3 9h18M5 9v10M19 9v10M8 9V5h8v4M9 14h6"/></svg>Tavoli</button>
@@ -183,23 +189,43 @@ function push(){
   busy=true;lastVer=uid();
   ref.set({tables:S.tables,res:S.res,ver:lastVer}).then(()=>setSy("Salvato online")).catch(e=>setSy(e&&e.code==="invalid_argument"?"Sola lettura: non puoi modificare":"Online non riuscito, riprovo al prossimo salvataggio")).finally(()=>{busy=false;if(again){again=false;push()}});
 }
-function initDb(){
-  if(!window.claude||!claude.use){setSy("Solo su questo dispositivo");return}
-  claude.use("db").then(db=>{
-    if(!db){setSy("Solo su questo dispositivo");return}
-    ref=db.doc("app/state");
-    ref.onSnapshot(snap=>{
-      if(!snap.exists){push();return}
-      const d=JSON.parse(JSON.stringify(snap.data()));
-      if(d.ver===lastVer)return;
-      if(!Array.isArray(d.tables)||!Array.isArray(d.res))return;
-      S={tables:d.tables,res:d.res};
-      try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
-      setSy("Salvato online");
-      if(!$("dlg").open&&!drag)render();
-    },()=>setSy("Online non disponibile"));
-  }).catch(()=>setSy("Solo su questo dispositivo"));
+let unsub=null,USER=null;
+const showLogin=v=>{$("lg").hidden=!v};
+function handleSnap(exists,raw,fromCache){
+  if(!exists){if(!fromCache)push();return}
+  const d=JSON.parse(JSON.stringify(raw));
+  if(d.ver===lastVer)return;
+  if(!Array.isArray(d.tables)||!Array.isArray(d.res))return;
+  S={tables:d.tables,res:d.res};
+  try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
+  setSy("Salvato online");
+  if(!$("dlg").open&&!document.querySelector(".bar[style*=translate]"))render();
 }
+function initFb(){
+  const A=window.FBAPI;
+  A.onAuth(u=>{
+    if(unsub){unsub();unsub=null}
+    USER=u?u.email:null;
+    if(!u){ref=null;showLogin(true);setSy("Accedi per salvare online");return}
+    showLogin(false);setSy("Collegamento…");
+    ref={set:d=>A.save(d)};
+    unsub=A.listen(snap=>handleSnap(snap.exists(),snap.data(),snap.metadata.fromCache),e=>setSy(e&&e.code==="permission-denied"?"Accesso negato: controlla le regole":"Online non disponibile"));
+    if(view==="set")render();
+  });
+}
+function initDb(){
+  if(window.FBAPI)return initFb();
+  addEventListener("fbready",initFb,{once:true});
+  setTimeout(()=>{if(!window.FBAPI)setSy("Solo su questo dispositivo")},6000);
+}
+async function doLogin(){
+  $("lge").textContent="";$("lgb").disabled=true;
+  try{await window.FBAPI.login($("lgm").value.trim(),$("lgp").value);$("lgp").value=""}
+  catch(e){const c=e&&e.code||"";$("lge").textContent=!window.FBAPI?"Servizio non raggiungibile. Controlla la connessione.":/invalid|wrong|user-not-found/.test(c)?"Email o password non corretti.":c==="auth/too-many-requests"?"Troppi tentativi. Riprova tra qualche minuto.":c==="auth/network-request-failed"?"Connessione assente.":"Accesso non riuscito ("+c+")."}
+  $("lgb").disabled=false;
+}
+$("lgb").onclick=doLogin;
+$("lgp").onkeydown=e=>{if(e.key==="Enter")doLogin()};
 const dur=r=>Number(r.dur)||120;
 const tn=id=>(S.tables.find(t=>t.id===id)||{name:"Da assegnare"}).name;
 let lateSig="";
@@ -254,6 +280,7 @@ function renderSet(){
   <div class="card"><h2>Pranzo e cena</h2><div class="g2"><div><label for="sp0">Pranzo dalle</label><select id="sp0" data-sv>${hopt(SV.p[0],6,22)}</select></div><div><label for="sp1">alle</label><select id="sp1" data-sv>${hopt(SV.p[1],7,23)}</select></div><div><label for="sc0">Cena dalle</label><select id="sc0" data-sv>${hopt(SV.c[0],10,23)}</select></div><div><label for="sc1">alle</label><select id="sc1" data-sv>${hopt(SV.c[1],11,24)}</select></div></div><p class="mut" style="margin:0">Le prenotazioni prima delle ${hm(CUT())} contano come pranzo, le altre come cena.</p></div>
   <div class="card"><h2>Prenotazioni passate</h2><p class="mut" style="margin:0 0 10px">${S.res.filter(r=>r.date<iso(new Date())).length} prenotazioni precedenti a oggi.</p><button class="b d" id="clr">Elimina prenotazioni passate</button></div>
   <div class="card"><h2>Rubrica Google Contatti</h2><p class="mut" style="margin:0 0 10px">${CT.length} contatti importati. Su contacts.google.com scegli Esporta, poi formato Google CSV o vCard, e carica qui il file. Scrivendo un nome nella prenotazione vedi i suggerimenti e il telefono si compila da solo. La rubrica resta solo su questo dispositivo.</p><button class="b" id="cti">Importa contatti</button> <button class="b d" id="ctd">Rimuovi rubrica</button><div class="mut" id="ctm" style="margin-top:8px"></div></div>
+  ${USER?`<div class="card"><h2>Account</h2><p class="mut" style="margin:0 0 10px">Collegato come ${esc(USER)}</p><button class="b" id="out">Esci</button></div>`:""}
   <div class="card"><h2>Copia di sicurezza</h2><p class="mut" style="margin:0 0 10px">I dati restano in questo browser. Scarica una copia per non perderli o per usarli su un altro dispositivo.</p><button class="b" id="exp">Scarica copia</button> <button class="b" id="imp">Carica copia</button><div class="mut" id="ms" style="margin-top:8px"></div></div></div>`;
 }
 function render(){
@@ -302,6 +329,7 @@ $("main").onclick=e=>{
   const td=e.target.dataset.td;
   if(td){if(e.target.dataset.c!=="1"){const n=S.res.filter(r=>tids(r).includes(td)).length;e.target.dataset.c="1";e.target.textContent=n?`Conferma (${n} prenotazioni da assegnare)`:"Conferma eliminazione";return}
     S.res.forEach(r=>{if(tids(r).includes(td)){r.tbs=tids(r).filter(x=>x!==td);r.table=r.tbs[0]||""}});S.tables=S.tables.filter(t=>t.id!==td);save();render()}
+  if(e.target.id==="out"){window.FBAPI&&window.FBAPI.logout();return}
   if(e.target.id==="cti"){$("cfile").click();return}
   if(e.target.id==="ctd"){if(e.target.dataset.c!=="1"){e.target.dataset.c="1";e.target.textContent="Conferma rimozione";return}CT=[];try{localStorage.removeItem("pr-contacts")}catch(x){}render();return}
   if(e.target.id==="seed"){S.tables=Array.from({length:9},(_,i)=>({id:uid()+i,name:String(i+1).padStart(2,"0"),seats:4}));save();render();return}
@@ -363,6 +391,30 @@ addEventListener("load",()=>{if(view==="tl")render()});
 setTimeout(()=>{if(view==="tl")render()},400);
 addEventListener("resize",()=>{if(view==="tl")render()});
 const tl=$("tl");if(tl){const d=new Date(),m=day()===iso(d)?d.getHours()*60+d.getMinutes()-60:18*60-60;tl.scrollLeft=Math.max(0,(m-START)*PX)}
+</script>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import {getAuth,onAuthStateChanged,signInWithEmailAndPassword,signOut} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import {initializeFirestore,persistentLocalCache,persistentMultipleTabManager,doc,onSnapshot,setDoc} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+const app=initializeApp({
+  apiKey:"AIzaSyAGf8ATZGFJ8LidfBRmcJE3vuXIg8kjhRg",
+  authDomain:"prenotazioni-ristorante-9c3d2.firebaseapp.com",
+  projectId:"prenotazioni-ristorante-9c3d2",
+  storageBucket:"prenotazioni-ristorante-9c3d2.firebasestorage.app",
+  messagingSenderId:"132556616335",
+  appId:"1:132556616335:web:f62a3b8c17aa7782fdb6fa"
+});
+const auth=getAuth(app);
+let db;try{db=initializeFirestore(app,{localCache:persistentLocalCache({tabManager:persistentMultipleTabManager()})})}catch(e){db=initializeFirestore(app,{})}
+const ref=doc(db,"ristorante","stato");
+window.FBAPI={
+  onAuth:cb=>onAuthStateChanged(auth,cb),
+  login:(e,p)=>signInWithEmailAndPassword(auth,e,p),
+  logout:()=>signOut(auth),
+  listen:(ok,err)=>onSnapshot(ref,{includeMetadataChanges:true},ok,err),
+  save:d=>setDoc(ref,d)
+};
+dispatchEvent(new Event("fbready"));
 </script>
 </body>
 </html>
