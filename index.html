@@ -12,10 +12,10 @@
 <title>Tavoli e prenotazioni</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap">
 <style>
-:root{--bg:#fff;--alt:#f3f3f3;--ink:#2b2d31;--mut:#777b82;--line:#d9dbde;--side:#3b3e43;--sideink:#e9eaec;--acc:#e0aa2e;--accink:#2b2d31;--now:#e2631f;--bad:#b3402b;--card:#fff;
+:root{--bg:#fff;--alt:#f6f6f7;--ink:#2b2d31;--mut:#777b82;--line:#d9dbde;--side:#4a4e55;--sideink:#e9eaec;--acc:#e0aa2e;--accink:#2b2d31;--now:#e2631f;--bad:#b3402b;--card:#fff;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1c1d20;--alt:#232529;--ink:#ececee;--mut:#9a9ea5;--line:#33363b;--side:#111214;--card:#26282c}}
-:root[data-theme="dark"]{--bg:#1c1d20;--alt:#232529;--ink:#ececee;--mut:#9a9ea5;--line:#33363b;--side:#111214;--card:#26282c}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#2c2e33;--alt:#33363c;--ink:#f0f0f2;--mut:#aeb2b9;--line:#464a51;--side:#24262b;--card:#373a41}}
+:root[data-theme="dark"]{--bg:#2c2e33;--alt:#33363c;--ink:#f0f0f2;--mut:#aeb2b9;--line:#464a51;--side:#24262b;--card:#373a41}
 *{box-sizing:border-box}
 html,body{height:100%;margin:0}
 body{height:100vh;height:100dvh}
@@ -60,6 +60,15 @@ nav button.on{color:#fff;background:#4b4f55}
 .bar i{font-style:normal;background:var(--acc);color:var(--accink);min-width:24px;font-size:.85rem;height:100%;display:flex;align-items:center;justify-content:center;font-weight:500;flex-shrink:0}
 .bar span{padding:0 7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:1rem}
 .bar.un{border-style:dashed}
+.gap{position:absolute;top:5px;bottom:5px;border:1.5px dashed #d9a21b;background:rgba(240,190,50,.16);border-radius:7px;pointer-events:none;display:flex;align-items:center;padding-left:8px;overflow:hidden;white-space:nowrap;color:#8a6200;font-size:.74rem;font-weight:500}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .gap{color:#f0c14b}}
+:root[data-theme="dark"] .gap{color:#f0c14b}
+.lab.free:before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:#e8b21e;margin-right:5px;vertical-align:middle}
+.bar.fin{background:#e6e7e9;border-color:#a0a3a8;color:#6b6f76}.bar.fin i{opacity:.6}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .bar.fin{background:#41444b;color:#a9adb4}}
+:root[data-theme="dark"] .bar.fin{background:#41444b;color:#a9adb4}
+.bar .rs{position:absolute;right:0;top:0;bottom:0;width:16px;cursor:ew-resize;touch-action:none;text-decoration:none}
+.bar .rs:after{content:"";position:absolute;right:5px;top:30%;bottom:30%;width:3px;border-radius:2px;background:#0005}
 .bar.late,.bar.jn.late{background:#f6d4d3;border-color:#d9534f;color:#1d2b26;animation:late 1.6s ease-in-out infinite}
 .lab.late{background:#f6d4d3;color:#8f1f1b}.lab.late small{color:#8f1f1b}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .bar.late,:root:not([data-theme="light"]) .bar.jn.late{background:#46211f;color:#ececee}:root:not([data-theme="light"]) .lab.late{background:#46211f;color:#f2a29e}:root:not([data-theme="light"]) .lab.late small{color:#f2a29e}}
@@ -99,7 +108,8 @@ input,select{width:100%;padding:8px 10px;border:1px solid var(--line);border-rad
 <label for="lgm">Email</label><input id="lgm" type="email" autocomplete="username" inputmode="email" style="margin-bottom:10px">
 <label for="lgp">Password</label><input id="lgp" type="password" autocomplete="current-password">
 <div id="lge" style="color:var(--bad);min-height:1.4em;margin:8px 0;font-size:.88rem"></div>
-<button class="b p" id="lgb" style="width:100%">Accedi</button></div></div>
+<button class="b p" id="lgb" style="width:100%">Accedi</button>
+<button class="b" id="lgs" style="width:100%;margin-top:8px">Usa senza accesso (solo questo dispositivo)</button></div></div>
 <nav>
   <div class="clock"><span id="clk">--:--</span><small id="cd"></small></div>
   <button data-v="tl" class="on"><svg viewBox="0 0 24 24"><path d="M3 9h18M5 9v10M19 9v10M8 9V5h8v4M9 14h6"/></svg>Tavoli</button>
@@ -110,8 +120,10 @@ input,select{width:100%;padding:8px 10px;border:1px solid var(--line);border-rad
   <div class="top">
     <h1 id="ttl">Tavoli</h1>
     <div class="seg" id="seg"><button data-s="p">Pranzo</button><button data-s="c">Cena</button><button data-s="a">Tutto</button></div>
-    <div class="stats"><div><b id="s1"></b> assegnato</div><div><b id="s2"></b> capienza</div><div><b id="s3"></b> arrivati</div><div id="sy" style="color:var(--mut)"></div></div>
+    <div class="stats"><div><b id="s1"></b> assegnato</div><div><b id="s2"></b> capienza</div><div><b id="s3"></b> arrivati</div><div><b id="s4"></b> liberi oltre 1h</div><div id="sy" style="color:var(--mut)"></div></div>
     <div class="dn"><button id="prev" aria-label="Giorno precedente">‹</button><input type="date" id="date" aria-label="Data"><button id="next" aria-label="Giorno successivo">›</button></div>
+    <button class="b" id="org" style="min-height:46px;font-weight:500" title="Riorganizza automaticamente tutti i tavoli del giorno">✨ Organizza</button>
+    <button class="b" id="walk" style="min-height:46px;font-weight:500">🚶 Walk-in</button>
     <button class="plus" id="add" aria-label="Nuova prenotazione">+</button>
   </div>
   <div id="main" style="flex:1;min-height:0;display:flex;flex-direction:column"></div>
@@ -121,8 +133,8 @@ input,select{width:100%;padding:8px 10px;border:1px solid var(--line);border-rad
   <h2 id="dt">Nuova prenotazione</h2>
   <div class="g2"><div><label for="rn">Nome</label><input id="rn" list="cl" autocomplete="off"><datalist id="cl"></datalist></div><div><label for="rp">Telefono</label><input id="rp" type="tel"></div></div>
   <div class="g2"><div><label for="rh">Ora</label><input id="rh" type="time" step="900"></div><div><label for="rg">Persone</label><input id="rg" type="number" min="1"></div></div>
-  <div class="g2"><div><label for="rd">Durata</label><select id="rd"></select></div><div><label for="rt">Tavolo</label><select id="rt"></select></div></div>
-  <div style="margin-bottom:10px"><label class="ck"><input type="checkbox" id="ra"> Cliente arrivato</label></div>
+  <div class="g2"><div><label>Durata</label><div style="display:flex;gap:6px;align-items:center"><button class="b" id="dm" type="button" aria-label="Meno tempo">−</button><span id="dv" style="flex:1;text-align:center;font-weight:500"></span><button class="b" id="dp" type="button" aria-label="Più tempo">+</button></div></div><div><label for="rt">Tavolo</label><div style="display:flex;gap:6px"><select id="rt"></select><button class="b" id="rauto" type="button" title="Scegli il tavolo libero adatto">Auto</button></div></div></div>
+  <div style="margin-bottom:10px"><label class="ck"><input type="checkbox" id="ra"> Cliente arrivato</label> <label class="ck"><input type="checkbox" id="rf"> Ha finito di mangiare</label> <label class="ck"><input type="checkbox" id="rl"> Blocca tavolo</label></div>
   <div style="margin-bottom:10px"><label>Unisci altri tavoli</label><div id="mg"></div></div>
   <div><label for="ro">Note</label><input id="ro"></div>
   <div id="er" class="mut" style="color:var(--bad);margin-top:8px"></div>
@@ -133,7 +145,10 @@ input,select{width:100%;padding:8px 10px;border:1px solid var(--line);border-rad
 <input type="file" id="file" accept="application/json" hidden>
 
 <script>
-const KEY="prenotazioni-ristorante-v1",LW=64;let START=0,END=0,PX=2.5,SV={p:[12,15],c:[19,23]},svc="a";
+const KEY="prenotazioni-ristorante-v1",LW=64;
+let AUTO=true;try{AUTO=localStorage.getItem("pr-auto")!=="0"}catch(e){}
+try{const t=localStorage.getItem("pr-theme");if(t)document.documentElement.dataset.theme=t}catch(e){}
+const TH=()=>document.documentElement.dataset.theme||"";let START=0,END=0,PX=2.5,SV={p:[12,15],c:[19,23]},svc="a";
 try{const g=JSON.parse(localStorage.getItem("pr-svc")||"null");if(g&&g.p&&g.c)SV=g}catch(e){}
 const CUT=()=>(SV.p[1]+SV.c[0])*30;
 const cls=t=>{const[a,b]=t.split(":").map(Number);return a*60+b<CUT()?"p":"c"};
@@ -147,6 +162,7 @@ const iso=d=>new Date(d.getTime()-d.getTimezoneOffset()*6e4).toISOString().slice
 const mins=t=>{const[a,b]=t.split(":").map(Number);return a*60+b};
 const hm=m=>String(Math.floor(m/60)).padStart(2,"0")+":"+String(m%60).padStart(2,"0");
 const day=()=>$("date").value;
+function migrateTables(){let ch=false;S.tables.forEach(t=>{if(t.nojoin===undefined){t.nojoin=/(^|\D)0*(1|12)$/.test(String(t.name).trim());ch=true}});return ch}
 function load(){try{const r=localStorage.getItem(KEY);if(r){S=JSON.parse(r);return}}catch(e){}
   S={tables:Array.from({length:9},(_,i)=>({id:uid()+i,name:String(i+1).padStart(2,"0"),seats:4})),res:[]}}
 let CT=[];try{CT=JSON.parse(localStorage.getItem("pr-contacts")||"[]")}catch(e){}
@@ -184,19 +200,21 @@ $("rp").onchange=()=>{const d=$("rp").value.replace(/\D/g,"");if(d.length<6||$("
 let ref=null,busy=false,again=false,lastVer="";
 const setSy=t=>{const e=document.getElementById("sy");if(e)e.textContent=t};
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}push()}
+const mine=[];
 function push(){
   if(!ref)return;if(busy){again=true;return}
-  busy=true;lastVer=uid();
-  ref.set({tables:S.tables,res:S.res,ver:lastVer}).then(()=>setSy("Salvato online")).catch(e=>setSy(e&&e.code==="invalid_argument"?"Sola lettura: non puoi modificare":"Online non riuscito, riprovo al prossimo salvataggio")).finally(()=>{busy=false;if(again){again=false;push()}});
+  busy=true;lastVer=uid();mine.push(lastVer);if(mine.length>30)mine.shift();
+  const slow=setTimeout(()=>setSy("Salvataggio in attesa: controlla che Firestore sia creato e le regole pubblicate"),8000);
+  ref.set({tables:S.tables,res:S.res,ver:lastVer}).then(()=>setSy("Salvato online")).catch(e=>{const c=e&&e.code||"";setSy(c==="permission-denied"?"Accesso negato: pubblica le regole di Firestore":c==="unavailable"?"Offline: salverò appena torna la connessione":"Salvataggio online non riuscito ("+c+")")}).finally(()=>{clearTimeout(slow);busy=false;if(again){again=false;push()}});
 }
 let unsub=null,USER=null;
 const showLogin=v=>{$("lg").hidden=!v};
 function handleSnap(exists,raw,fromCache){
   if(!exists){if(!fromCache)push();return}
   const d=JSON.parse(JSON.stringify(raw));
-  if(d.ver===lastVer)return;
+  if(mine.includes(d.ver))return;
   if(!Array.isArray(d.tables)||!Array.isArray(d.res))return;
-  S={tables:d.tables,res:d.res};
+  S={tables:d.tables,res:d.res};if(migrateTables())save();
   try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
   setSy("Salvato online");
   if(!$("dlg").open&&!document.querySelector(".bar[style*=translate]"))render();
@@ -225,12 +243,31 @@ async function doLogin(){
   $("lgb").disabled=false;
 }
 $("lgb").onclick=doLogin;
+$("lgs").onclick=()=>{showLogin(false);setSy("Solo su questo dispositivo")};
 $("lgp").onkeydown=e=>{if(e.key==="Enter")doLogin()};
-const dur=r=>Number(r.dur)||120;
+const dur=r=>Number(r.dur)||90;
 const tn=id=>(S.tables.find(t=>t.id===id)||{name:"Da assegnare"}).name;
 let lateSig="";
 const nowM=()=>{const d=new Date();return d.getHours()*60+d.getMinutes()};
 const isLate=r=>r.date===iso(new Date())&&!r.arr&&nowM()-mins(r.time)>=15&&nowM()<mins(r.time)+dur(r);
+function setFin(r,on){
+  if(on){r.fin=true;r.arr=true;r.finAt=hm(nowM());r.durOrig=dur(r);
+    if(r.date===iso(new Date())&&nowM()>mins(r.time))r.dur=Math.max(15,Math.ceil((nowM()-mins(r.time))/15)*15)}
+  else{r.fin=false;if(r.durOrig)r.dur=r.durOrig;delete r.finAt;delete r.durOrig}
+}
+const todayView=()=>day()===iso(new Date());
+const fromM=()=>Math.max(START,Math.ceil(nowM()/15)*15);
+function gapsFor(id){
+  if(!todayView())return[];
+  const f=fromM();if(f>=END)return[];
+  const occ=S.res.filter(r=>r.date===day()&&tids(r).includes(id)).map(r=>[mins(r.time),mins(r.time)+dur(r)]).sort((a,b)=>a[0]-b[0]);
+  const out=[];let c=f;
+  for(const[a,b]of occ){if(b<=c)continue;const e=Math.min(a,END);if(e-c>60)out.push([c,e]);c=Math.max(c,b);if(c>=END)break}
+  if(c<END&&END-c>60)out.push([c,END]);
+  return out;
+}
+const freeNow=id=>{const g=gapsFor(id);return g.length>0&&g[0][0]===fromM()};
+const gapHtml=id=>gapsFor(id).map(([a,b])=>`<div class="gap" style="left:${(a-START)*PX}px;width:${(b-a)*PX}px"><span>libero ${Math.floor((b-a)/60)}h${(b-a)%60?String((b-a)%60).padStart(2,"0"):""}</span></div>`).join("");
 const tids=r=>(r.tbs&&r.tbs.length?r.tbs:(r.table?[r.table]:[])).filter(id=>S.tables.some(t=>t.id===id));
 const tnames=r=>{const a=tids(r).map(id=>tn(id));return a.length?a.join(" + "):"Da assegnare"};
 const dayRes=()=>S.res.filter(r=>r.date===day()&&(svc==="a"||cls(r.time)===svc)).sort((a,b)=>a.time.localeCompare(b.time));
@@ -238,12 +275,12 @@ const dayRes=()=>S.res.filter(r=>r.date===day()&&(svc==="a"||cls(r.time)===svc))
 function stats(){
   const rs=dayRes(),as=rs.filter(r=>tids(r).length).length;
   const seats=S.tables.reduce((n,t)=>n+Number(t.seats),0),cov=rs.reduce((n,r)=>n+Number(r.guests),0);
-  $("s1").textContent=as+"/"+rs.length;$("s2").textContent=(seats?Math.round(cov/seats*100):0)+"%";$("s3").textContent=rs.filter(r=>r.arr).length+"/"+rs.length;
+  $("s1").textContent=as+"/"+rs.length;$("s2").textContent=(seats?Math.round(cov/seats*100):0)+"%";$("s3").textContent=rs.filter(r=>r.arr).length+"/"+rs.length;$("s4").textContent=(!todayView()||fromM()>=END)?"–":S.tables.filter(t=>freeNow(t.id)).length;
 }
 function barHtml(r,un,tid){
-  const ids=tids(r),jn=tid&&ids.length>1&&ids[0]!==tid,lbl=(r.arr?"✓ ":isLate(r)?"⏰ ":"")+esc(r.name)+(jn?" (unito)":ids.length>1?" +"+(ids.length-1):"");
+  const ids=tids(r),jn=tid&&ids.length>1&&ids[0]!==tid,lbl=(r.lock?"🔒 ":"")+(r.walk?"🚶 ":"")+(r.arr?"✓ ":isLate(r)?"⏰ ":"")+esc(r.name)+(jn?" (unito)":ids.length>1?" +"+(ids.length-1):"")+(r.fin?" · finito":"");
   const l=Math.max(0,(mins(r.time)-START)*PX),w=Math.max(24,dur(r)*PX-(mins(r.time)<START?(START-mins(r.time))*PX:0));
-  return `<button class="bar${un?" un":""}${jn?" jn":""}${r.arr?" arr":""}${isLate(r)?" late":""}" data-r="${r.id}" style="left:${l}px;width:${w}px" title="${esc(r.name)} ${r.time}"><i>${r.guests}</i><span>${lbl}</span></button>`;
+  return `<button class="bar${un?" un":""}${jn?" jn":""}${r.fin?" fin":r.arr?" arr":""}${isLate(r)?" late":""}" data-r="${r.id}" style="left:${l}px;width:${w}px" title="${esc(r.name)} ${r.time}"><i>${r.guests}</i><span>${lbl}</span><u class="rs"></u></button>`;
 }
 function renderTL(){
   const mw=Math.max($("main").clientWidth,320),mh=Math.max($("main").clientHeight,300);
@@ -253,7 +290,7 @@ function renderTL(){
   const W=(END-START)*PX,rs=dayRes();
   let hrs="";for(let m=START;m<END;m+=lab)hrs+=`<span style="left:${(m-START)*PX}px${m%60?";font-weight:400;opacity:.75":""}">${hm(m)}</span>`;
   const grid=`background-image:repeating-linear-gradient(90deg,var(--line) 0 1px,transparent 1px ${PX*60}px),repeating-linear-gradient(90deg,var(--alt) 0 ${PX*30}px,transparent ${PX*30}px ${PX*60}px)`;
-  const row=(lab,id,list,un)=>`<div class="r" style="height:${RH}px"><div class="lab${list.some(isLate)?" late":""}">${lab}</div><div class="cells" data-t="${id}" style="width:${W}px;${grid}">${list.map(r=>barHtml(r,un,id)).join("")}</div></div>`;
+  const row=(lab,id,list,un)=>`<div class="r" style="height:${RH}px"><div class="lab${list.some(isLate)?" late":""}${id&&freeNow(id)?" free":""}">${lab}</div><div class="cells" data-t="${id}" style="width:${W}px;${grid}">${id?gapHtml(id):""}${list.map(r=>barHtml(r,un,id)).join("")}</div></div>`;
   const un=rs.filter(r=>!tids(r).length);
   let h=`<div id="tl"><div class="in" style="width:${W+LW}px"><div class="hd"><div class="corner"></div><div class="hrs" style="width:${W}px">${hrs}</div></div>`;
   if(un.length)h+=row('<small style="margin:0">Da assegnare</small>',"",un,true);
@@ -268,15 +305,18 @@ function placeNow(){
   n.hidden=!(day()===iso(d)&&m>=START&&m<END);n.style.left=(LW+(m-START)*PX)+"px";
 }
 function renderList(){
-  const rs=dayRes();
-  $("main").innerHTML=`<div class="pg"><div class="card"><h2>${rs.length} prenotazioni · ${rs.reduce((n,r)=>n+Number(r.guests),0)} coperti</h2>`+
-  (rs.length?rs.map(r=>`<div class="it"><b style="min-width:52px">${r.time}</b><div class="g"><b>${esc(r.name)}</b> · ${r.guests} pers.<div class="mut">${esc(tids(r).length?"Tavolo "+tnames(r):"Da assegnare")}${r.phone?" · "+esc(r.phone):""}${r.notes?" · "+esc(r.notes):""}</div></div><button class="b${r.arr?" p":""}" data-arr="${r.id}">${r.arr?"Arrivato ✓":"Arrivato"}</button><button class="b" data-r="${r.id}">Modifica</button></div>`).join(""):'<div class="empty">Nessuna prenotazione. Premi + per aggiungerne una.</div>')+`</div></div>`;
+  const rs=dayRes(),un=rs.filter(r=>!tids(r).length).length;
+  $("main").innerHTML=`<div class="pg"><div class="card"><h2>${rs.length} prenotazioni · ${rs.reduce((n,r)=>n+Number(r.guests),0)} coperti</h2>${rs.length?`<button class="b" id="reassign" style="margin:0 6px 8px 0" title="Cancella le assegnazioni del giorno e le rifà da zero">Riassegna i tavoli del giorno</button>`:""}${un?`<button class="b p" id="autoall" style="margin-bottom:8px">Assegna i tavoli automaticamente (${un})</button>`:""}`+
+  (rs.length?rs.map(r=>`<div class="it"><b style="min-width:52px">${r.time}</b><div class="g"><b>${esc(r.name)}</b> · ${r.guests} pers.<div class="mut">${esc(tids(r).length?"Tavolo "+tnames(r):"Da assegnare")}${r.phone?" · "+esc(r.phone):""}${r.notes?" · "+esc(r.notes):""}</div></div><button class="b${r.arr?" p":""}" data-arr="${r.id}">${r.fin?"Finito ✓":r.arr?"Segna finito":"Arrivato"}</button><button class="b" data-r="${r.id}">Modifica</button></div>`).join(""):'<div class="empty">Nessuna prenotazione. Premi + per aggiungerne una.</div>')+`</div></div>`;
 }
 const hopt=(v,a,b)=>Array.from({length:(b-a)*2+1},(_,i)=>a+i/2).map(h=>`<option value="${h}"${h===v?" selected":""}>${hm(h*60)}</option>`).join("");
 function renderSet(){
   $("main").innerHTML=`<div class="pg"><div class="card"><h2>Tavoli</h2>`+
-  S.tables.map(t=>`<div class="it"><input data-n="${t.id}" value="${esc(t.name)}" aria-label="Nome tavolo" style="flex:1;min-width:0"><input data-s="${t.id}" type="number" min="1" value="${t.seats}" aria-label="Posti" style="width:72px"><button class="b d" data-td="${t.id}">Elimina</button></div>`).join("")+
+  S.tables.map(t=>`<div class="it"><input data-n="${t.id}" value="${esc(t.name)}" aria-label="Nome tavolo" style="flex:1;min-width:0"><input data-s="${t.id}" type="number" min="1" value="${t.seats}" aria-label="Posti" style="width:72px"><label class="ck" style="margin:0;white-space:nowrap"><input type="checkbox" data-nj="${t.id}"${t.nojoin?" checked":""}> Non unibile</label><button class="b d" data-td="${t.id}">Elimina</button></div>`).join("")+
   `<div class="g2" style="margin-top:12px"><div><label for="tn">Nome tavolo</label><input id="tn" placeholder="10"></div><div><label for="ts">Posti</label><input id="ts" type="number" min="1" value="4"></div></div><button class="b p" id="addT">Aggiungi tavolo</button></div>
+  <div class="card"><h2>Organizza più giorni</h2><p class="mut" style="margin:0 0 10px">Riorganizza i tavoli di tutti i giorni da oggi in poi. Per un solo giorno usa ✨ Organizza in alto, dopo aver scelto la data.</p><button class="b p" id="orgall">Organizza da oggi in poi</button> <button class="b" id="reassignall">Riassegna da zero da oggi in poi</button></div>
+  <div class="card"><h2>Assegnazione tavoli</h2><label class="ck"><input type="checkbox" id="au"${AUTO?" checked":""}> Assegna automaticamente le nuove prenotazioni senza tavolo</label><p class="mut" style="margin:6px 0 0">Sceglie il tavolo libero più piccolo che basta per le persone. Se non basta, unisce tavoli vicini.</p></div>
+  <div class="card"><h2>Tema</h2><select id="th" aria-label="Tema"><option value=""${!TH()?" selected":""}>Automatico (come il dispositivo)</option><option value="light"${TH()==="light"?" selected":""}>Chiaro</option><option value="dark"${TH()==="dark"?" selected":""}>Scuro</option></select></div>
   <div class="card"><h2>Pranzo e cena</h2><div class="g2"><div><label for="sp0">Pranzo dalle</label><select id="sp0" data-sv>${hopt(SV.p[0],6,22)}</select></div><div><label for="sp1">alle</label><select id="sp1" data-sv>${hopt(SV.p[1],7,23)}</select></div><div><label for="sc0">Cena dalle</label><select id="sc0" data-sv>${hopt(SV.c[0],10,23)}</select></div><div><label for="sc1">alle</label><select id="sc1" data-sv>${hopt(SV.c[1],11,24)}</select></div></div><p class="mut" style="margin:0">Le prenotazioni prima delle ${hm(CUT())} contano come pranzo, le altre come cena.</p></div>
   <div class="card"><h2>Prenotazioni passate</h2><p class="mut" style="margin:0 0 10px">${S.res.filter(r=>r.date<iso(new Date())).length} prenotazioni precedenti a oggi.</p><button class="b d" id="clr">Elimina prenotazioni passate</button></div>
   <div class="card"><h2>Rubrica Google Contatti</h2><p class="mut" style="margin:0 0 10px">${CT.length} contatti importati. Su contacts.google.com scegli Esporta, poi formato Google CSV o vCard, e carica qui il file. Scrivendo un nome nella prenotazione vedi i suggerimenti e il telefono si compila da solo. La rubrica resta solo su questo dispositivo.</p><button class="b" id="cti">Importa contatti</button> <button class="b d" id="ctd">Rimuovi rubrica</button><div class="mut" id="ctm" style="margin-top:8px"></div></div>
@@ -289,39 +329,148 @@ function render(){
   document.querySelectorAll("#seg [data-s]").forEach(b=>b.classList.toggle("on",b.dataset.s===svc));
   stats();({tl:renderTL,list:renderList,set:renderSet})[view]();
 }
-function drawMg(sel){const p=$("rt").value;
-  $("mg").innerHTML=!p?'<span class="mut">Scegli prima il tavolo principale.</span>':(S.tables.filter(t=>t.id!==p).map(t=>`<label class="ck"><input type="checkbox" value="${t.id}"${sel.includes(t.id)?" checked":""}>${esc(t.name)} · ${t.seats}</label>`).join("")||'<span class="mut">Nessun altro tavolo.</span>')}
+const occNow=()=>{const a=mins($("rh").value||"20:00"),b=a+DUR,date=day();return id=>S.res.some(x=>x.id!==editing&&x.date===date&&tids(x).includes(id)&&mins(x.time)<b&&a<mins(x.time)+dur(x))};
+function drawRt(sel){
+  const occ=occNow(),cur=sel===undefined?$("rt").value:sel;
+  $("rt").innerHTML='<option value="">Da assegnare</option>'+S.tables.filter(t=>!occ(t.id)||t.id===cur).map(t=>`<option value="${t.id}">${esc(t.name)} (${t.seats} posti)${occ(t.id)?" · occupato":""}</option>`).join("");
+  $("rt").value=S.tables.some(t=>t.id===cur)?cur:"";
+}
+function drawMg(sel){const p=$("rt").value,pt=S.tables.find(t=>t.id===p),occ=occNow();
+  $("mg").innerHTML=!p?'<span class="mut">Scegli prima il tavolo principale.</span>':pt&&pt.nojoin?'<span class="mut">Questo tavolo non può essere unito ad altri.</span>':(S.tables.filter(t=>t.id!==p&&!t.nojoin&&(!occ(t.id)||sel.includes(t.id))).map(t=>`<label class="ck"><input type="checkbox" value="${t.id}"${sel.includes(t.id)?" checked":""}>${esc(t.name)} · ${t.seats}</label>`).join("")||'<span class="mut">Nessun altro tavolo.</span>')}
 const getMg=()=>[...document.querySelectorAll("#mg input:checked")].map(i=>i.value);
+let DUR=90,WALK=false;
+const fmtDur=m=>m<60?m+" min":Math.floor(m/60)+" h"+(m%60?" "+m%60+" min":"");
+function drawDur(){$("dv").textContent=fmtDur(DUR)}
 function openDlg(r,t,time){
-  editing=r?r.id:null;$("er").textContent="";$("er").dataset.w="";$("del").dataset.c="";$("del").textContent="Elimina";
+  editing=r?r.id:null;WALK=!!(r&&r.walk);$("er").textContent="";$("er").dataset.w="";$("del").dataset.c="";$("del").textContent="Elimina";
   $("dt").textContent=r?"Modifica prenotazione":"Nuova prenotazione";$("del").hidden=!r;
   $("rt").innerHTML='<option value="">Da assegnare</option>'+S.tables.map(x=>`<option value="${x.id}">${esc(x.name)} (${x.seats} posti)</option>`).join("");
-  $("rd").innerHTML=[30,60,90,120,150,180,210,240].map(m=>`<option value="${m}">${m<60?m+" min":(m/60+"").replace(".",",")+" h"}</option>`).join("");
+  
   $("rn").value=r?r.name:"";$("rp").value=r?r.phone:"";$("rh").value=r?r.time:(time||(svc==="p"?"13:00":"20:00"));
-  $("rg").value=r?r.guests:2;$("rd").value=r?dur(r):120;$("rt").value=r?r.table:(t||"");$("ro").value=r?r.notes:"";drawMg(r?tids(r).slice(1):[]);$("ra").checked=!!(r&&r.arr);
+  $("rg").value=r?r.guests:2;DUR=r?dur(r):90;drawDur();drawRt(r?r.table:(t||""));$("ro").value=r?r.notes:"";drawMg(r?tids(r).slice(1):[]);$("ra").checked=!!(r&&r.arr);$("rf").checked=!!(r&&r.fin);$("rl").checked=!!(r&&r.lock);
   $("dlg").showModal();
 }
 $("rt").onchange=()=>drawMg(getMg());
+$("rh").onchange=()=>{drawRt();drawMg(getMg())};$("rh").oninput=$("rh").onchange;
+$("rauto").onclick=()=>{const ids=pickTables(Math.max(1,+$("rg").value||1),day(),$("rh").value||"20:00",DUR,editing);
+  if(!ids.length){$("er").textContent="Nessun tavolo libero adatto in quell'orario.";return}
+  $("er").textContent="";$("rt").value=ids[0];drawMg(ids.slice(1))};
 $("ok").onclick=()=>{
-  const r={id:editing||uid(),date:day(),time:$("rh").value,name:$("rn").value.trim(),phone:$("rp").value.trim(),guests:Math.max(1,+$("rg").value||1),dur:+$("rd").value,table:$("rt").value,notes:$("ro").value.trim(),arr:$("ra").checked};
+  const r={id:editing||uid(),date:day(),time:$("rh").value,name:$("rn").value.trim(),phone:$("rp").value.trim(),guests:Math.max(1,+$("rg").value||1),dur:DUR,table:$("rt").value,notes:$("ro").value.trim(),arr:$("ra").checked||$("rf").checked,walk:WALK,lock:$("rl").checked};
   r.tbs=r.table?[r.table,...getMg().filter(x=>x!==r.table)]:[];
+  {const old=S.res.find(x=>x.id===r.id),wasFin=!!(old&&old.fin);
+   if(old){r.fin=old.fin;r.finAt=old.finAt;r.durOrig=old.durOrig}
+   const want=$("rf").checked;if(want&&!wasFin)setFin(r,true);else if(!want&&wasFin)setFin(r,false)}
   if(!r.name||!r.time){$("er").textContent="Inserisci almeno nome e ora.";return}
+  if(r.tbs.length>1){const bad=r.tbs.map(id=>S.tables.find(t=>t.id===id)).filter(t=>t&&t.nojoin);if(bad.length){$("er").textContent="Il tavolo "+bad.map(t=>t.name).join(", ")+" non può essere unito ad altri tavoli.";return}}
+  let autoMsg="";
+  if(!r.table&&AUTO){const ids=pickTables(r.guests,r.date,r.time,r.dur,r.id);if(ids.length){r.table=ids[0];r.tbs=ids;autoMsg=`${r.name}: assegnato al tavolo ${ids.map(tn).join(" + ")}`}}
   const cap=r.tbs.reduce((n,id)=>n+Number((S.tables.find(x=>x.id===id)||{}).seats||0),0);
   const clash=r.tbs.length&&S.res.some(x=>x.id!==r.id&&x.date===r.date&&tids(x).some(id=>r.tbs.includes(id))&&mins(x.time)<mins(r.time)+r.dur&&mins(r.time)<mins(x.time)+dur(x));
   let m="";if(clash)m+="Il tavolo è già occupato in quell'orario. ";if(r.tbs.length&&r.guests>cap)m+=`${r.tbs.length>1?"I tavoli uniti hanno":"Il tavolo ha"} ${cap} posti per ${r.guests} persone. `;
   if(m&&$("er").dataset.w!==m){$("er").dataset.w=m;$("er").textContent=m+"Premi Salva di nuovo per confermare.";return}
   const i=S.res.findIndex(x=>x.id===r.id);if(i>=0)S.res[i]=r;else S.res.push(r);if(svc!=="a"){svc=cls(r.time);applySvc()}
+  if(autoMsg)toast(autoMsg,()=>{const j=S.res.findIndex(x=>x.id===r.id);if(j>=0){S.res[j].table="";S.res[j].tbs=[];save();render()}});
   save();$("dlg").close();render();
 };
 $("can").onclick=()=>$("dlg").close();
+$("dm").onclick=()=>{DUR=Math.max(15,DUR-15);drawDur();drawRt();drawMg(getMg())};
+$("dp").onclick=()=>{DUR=Math.min(480,DUR+15);drawDur();drawRt();drawMg(getMg())};
 $("del").onclick=()=>{if($("del").dataset.c!=="1"){$("del").dataset.c="1";$("del").textContent="Conferma eliminazione";return}S.res=S.res.filter(x=>x.id!==editing);save();$("dlg").close();render()};
 $("seg").onclick=e=>{const b=e.target.closest("[data-s]");if(b){svc=b.dataset.s;applySvc();render()}};
+function freeTable(g,date,t,d){
+  const a=mins(t),b=a+d;
+  const occ=id=>S.res.some(x=>x.date===date&&tids(x).includes(id)&&mins(x.time)<b&&a<mins(x.time)+dur(x));
+  const c=S.tables.filter(x=>!occ(x.id)).sort((p,q)=>{const pf=p.seats>=g,qf=q.seats>=g;return pf!==qf?(pf?-1:1):pf?p.seats-q.seats:q.seats-p.seats});
+  return c.length?c[0].id:"";
+}
+function pickTables(g,date,t,d,ex){
+  const a=mins(t),b=a+d;
+  const occ=id=>S.res.some(x=>x.id!==ex&&x.date===date&&tids(x).includes(id)&&mins(x.time)<b&&a<mins(x.time)+dur(x));
+  const T=S.tables,free=T.map(x=>!occ(x.id));
+  let best=null;
+  T.forEach((x,i)=>{if(free[i]&&Number(x.seats)>=g&&(!best||Number(x.seats)<Number(best.seats)))best=x});
+  if(best)return[best.id];
+  for(let n=2;n<=3;n++){let bi=-1,bs=1e9;
+    for(let i=0;i+n<=T.length;i++){let ok=true,sum=0;for(let k=i;k<i+n;k++){if(!free[k]||T[k].nojoin){ok=false;break}sum+=Number(T[k].seats)}
+      if(ok&&sum>=g&&sum<bs){bs=sum;bi=i}}
+    if(bi>=0)return T.slice(bi,bi+n).map(x=>x.id)}
+  return[];
+}
+function chooseTables(g,isFree){
+  const T=S.tables;let best=null;
+  T.forEach(x=>{if(isFree(x.id)&&Number(x.seats)>=g&&(!best||Number(x.seats)<Number(best.seats)))best=x});
+  if(best)return[best.id];
+  for(let n=2;n<=3;n++){let bi=-1,bs=1e9;
+    for(let i=0;i+n<=T.length;i++){let ok=true,sum=0;for(let k=i;k<i+n;k++){if(!isFree(T[k].id)||T[k].nojoin){ok=false;break}sum+=Number(T[k].seats)}
+      if(ok&&sum>=g&&sum<bs){bs=sum;bi=i}}
+    if(bi>=0)return T.slice(bi,bi+n).map(x=>x.id)}
+  return[];
+}
+function organizeDate(d,fresh){
+  const all=S.res.filter(r=>r.date===d);
+  const fixed=all.filter(r=>r.arr||r.fin||r.lock),mov=all.filter(r=>!(r.arr||r.fin||r.lock));
+  if(!mov.length)return null;
+  const seat=id=>Number((S.tables.find(t=>t.id===id)||{}).seats||0),nj=id=>!!(S.tables.find(t=>t.id===id)||{}).nojoin;
+  const run=(order,keep)=>{
+    const occ={};S.tables.forEach(t=>occ[t.id]=[]);
+    fixed.forEach(r=>tids(r).forEach(id=>occ[id]&&occ[id].push([mins(r.time),mins(r.time)+dur(r)])));
+    const res=new Map();let score=0;
+    for(const r of order){
+      const a=mins(r.time),b=a+dur(r),g=Number(r.guests),isFree=id=>occ[id]&&!occ[id].some(([x,y])=>x<b&&a<y);
+      const cur=fresh?[]:tids(r);let ids=[];
+      if(keep&&cur.length&&!(cur.length>1&&cur.some(nj))&&cur.every(isFree)&&cur.reduce((n,id)=>n+seat(id),0)>=g)ids=cur;
+      else ids=chooseTables(g,isFree);
+      if(ids.length){ids.forEach(id=>occ[id].push([a,b]));res.set(r.id,ids);
+        score+=1000-(ids.reduce((n,id)=>n+seat(id),0)-g)-(ids.length>1?60:0)+(ids.join()===cur.join()?3:0)}
+    }
+    return{score,res};
+  };
+  const byT=(x,y)=>mins(x.time)-mins(y.time)||y.guests-x.guests;
+  const cands=[[ [...mov].sort(byT),true ],[ [...mov].sort(byT),false ],[ [...mov].sort((x,y)=>y.guests-x.guests||byT(x,y)),false ],[ [...mov].sort((x,y)=>dur(y)*y.guests-dur(x)*x.guests),false ]];
+  let seed=12345;const rnd=()=>(seed=(seed*1103515245+12345)%2147483648)/2147483648;
+  for(let k=0;k<150;k++){const o=[...mov];for(let i=o.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[o[i],o[j]]=[o[j],o[i]]}cands.push([o,false])}
+  let best=null;for(const[o,keep]of cands){const r=run(o,keep);if(!best||r.score>best.score)best=r}
+  let moved=0,none=0;
+  mov.forEach(r=>{const ids=best.res.get(r.id)||[];if(ids.join()!==tids(r).join())moved++;if(!ids.length)none++;r.tbs=ids;r.table=ids[0]||""});
+  return{n:mov.length,moved,none};
+}
+function organizeDay(fresh){
+  const snap=JSON.stringify(S.res),r=organizeDate(day(),fresh);
+  if(!r){toast("Niente da organizzare: le prenotazioni sono già arrivate o bloccate",()=>{});return}
+  save();render();
+  toast(r.moved?`${fresh?"Riassegnate":"Organizzate"} ${r.n} prenotazioni: ${r.moved} spostate`+(r.none?`, ${r.none} senza tavolo libero`:""):"I tavoli erano già ben organizzati"+(r.none?` (${r.none} senza tavolo libero)`:""),()=>{S.res=JSON.parse(snap);save();render()});
+}
+function organizeAll(fresh){
+  const snap=JSON.stringify(S.res),today=iso(new Date());
+  const dates=[...new Set(S.res.map(r=>r.date))].filter(x=>x>=today).sort();
+  let days=0,n=0,moved=0,none=0;
+  dates.forEach(d=>{const r=organizeDate(d,fresh);if(r){days++;n+=r.n;moved+=r.moved;none+=r.none}});
+  if(!days){toast("Nessuna prenotazione da organizzare nei prossimi giorni",()=>{});return}
+  save();render();
+  toast(`${days} giorni ${fresh?"riassegnati":"organizzati"}: ${n} prenotazioni, ${moved} spostate`+(none?`, ${none} senza tavolo libero`:""),()=>{S.res=JSON.parse(snap);save();render()});
+}
+$("org").onclick=()=>organizeDay(false);
+$("walk").onclick=()=>{
+  const now=new Date();$("date").value=iso(now);
+  const t=hm(Math.floor((now.getHours()*60+now.getMinutes())/15)*15);
+  if(svc!=="a"){svc=cls(t);applySvc()}
+  render();
+  const ids=pickTables(2,iso(now),t,90);openDlg(null,ids[0]||"",t);drawMg(ids.slice(1));
+  WALK=true;$("dt").textContent="Walk-in";$("rn").value="Walk-in";$("ra").checked=true;
+};
 $("add").onclick=()=>openDlg();
 document.querySelector("nav").onclick=e=>{const b=e.target.closest("[data-v]");if(b){view=b.dataset.v;render()}};
 $("main").onclick=e=>{
   if(wasDrag)return;
   const ar=e.target.dataset.arr||(e.target.closest(".bar i")&&e.target.closest(".bar").dataset.r);
-  if(ar){const r=S.res.find(x=>x.id===ar);if(r){r.arr=!r.arr;save();render();toast(r.arr?`${r.name} è arrivato`:`${r.name}: arrivo annullato`,()=>{r.arr=!r.arr;save();render()})}return}
+  if(ar){const r=S.res.find(x=>x.id===ar);if(r){
+    const prev=JSON.parse(JSON.stringify(r));let msg;
+    if(!r.arr){r.arr=true;msg=`${r.name} è arrivato`}
+    else if(!r.fin){setFin(r,true);msg=`${r.name} ha finito: tavolo libero dalle ${hm(mins(r.time)+dur(r))}`}
+    else{setFin(r,false);r.arr=false;msg=`${r.name}: stato azzerato`}
+    save();render();
+    toast(msg,()=>{const j=S.res.findIndex(x=>x.id===prev.id);if(j>=0)S.res[j]=prev;save();render()})}return}
   const rid=e.target.closest("[data-r]");
   if(rid){openDlg(S.res.find(x=>x.id===rid.dataset.r));return}
   const c=e.target.closest(".cells");
@@ -330,6 +479,15 @@ $("main").onclick=e=>{
   if(td){if(e.target.dataset.c!=="1"){const n=S.res.filter(r=>tids(r).includes(td)).length;e.target.dataset.c="1";e.target.textContent=n?`Conferma (${n} prenotazioni da assegnare)`:"Conferma eliminazione";return}
     S.res.forEach(r=>{if(tids(r).includes(td)){r.tbs=tids(r).filter(x=>x!==td);r.table=r.tbs[0]||""}});S.tables=S.tables.filter(t=>t.id!==td);save();render()}
   if(e.target.id==="out"){window.FBAPI&&window.FBAPI.logout();return}
+  if(e.target.id==="orgall"){organizeAll(false);return}
+  if(e.target.id==="reassignall"){organizeAll(true);return}
+  if(e.target.id==="reassign"){organizeDay(true);return}
+  if(e.target.id==="autoall"){
+    const snap=JSON.stringify(S.res);
+    const todo=dayRes().filter(r=>!tids(r).length).sort((a,b)=>a.time.localeCompare(b.time)||b.guests-a.guests);
+    let n=0;todo.forEach(r=>{const ids=pickTables(r.guests,r.date,r.time,dur(r),r.id);if(ids.length){r.table=ids[0];r.tbs=ids;n++}});
+    save();render();
+    toast(`Assegnate ${n} su ${todo.length}`+(n<todo.length?": per le altre non c'è un tavolo libero":""),()=>{S.res=JSON.parse(snap);save();render()});return}
   if(e.target.id==="cti"){$("cfile").click();return}
   if(e.target.id==="ctd"){if(e.target.dataset.c!=="1"){e.target.dataset.c="1";e.target.textContent="Conferma rimozione";return}CT=[];try{localStorage.removeItem("pr-contacts")}catch(x){}render();return}
   if(e.target.id==="seed"){S.tables=Array.from({length:9},(_,i)=>({id:uid()+i,name:String(i+1).padStart(2,"0"),seats:4}));save();render();return}
@@ -340,11 +498,13 @@ $("main").onclick=e=>{
   if(e.target.id==="imp")$("file").click();
 };
 $("main").onchange=e=>{
+  if(e.target.id==="au"){AUTO=e.target.checked;try{localStorage.setItem("pr-auto",AUTO?"1":"0")}catch(x){}return}
+  if(e.target.id==="th"){const v=e.target.value;if(v)document.documentElement.dataset.theme=v;else delete document.documentElement.dataset.theme;try{localStorage.setItem("pr-theme",v)}catch(x){}return}
   if(e.target.hasAttribute&&e.target.hasAttribute("data-sv")){let p0=+$("sp0").value,p1=+$("sp1").value,c0=+$("sc0").value,c1=+$("sc1").value;
     if(p1<=p0)p1=Math.min(23,p0+1);if(c0<p1)c0=Math.min(23,p1);if(c1<=c0)c1=Math.min(24,c0+1);
     SV={p:[p0,p1],c:[c0,c1]};try{localStorage.setItem("pr-svc",JSON.stringify(SV))}catch(x){}applySvc();render();return}
-  const d=e.target.dataset,t=S.tables.find(x=>x.id===(d.n||d.s));if(!t)return;
-  if(d.n)t.name=e.target.value.trim()||t.name;if(d.s)t.seats=Math.max(1,+e.target.value||t.seats);save()};
+  const d=e.target.dataset,t=S.tables.find(x=>x.id===(d.n||d.s||d.nj));if(!t)return;
+  if(d.n)t.name=e.target.value.trim()||t.name;if(d.s)t.seats=Math.max(1,+e.target.value||t.seats);if(d.nj)t.nojoin=e.target.checked;save()};
 $("cfile").onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();
   r.onload=()=>{let n=0;try{CT=parseContacts(String(r.result));n=CT.length;try{localStorage.setItem("pr-contacts",JSON.stringify(CT))}catch(x){}}catch(x){n=0}
     render();$("ctm").textContent=n?`${n} contatti importati.`:"Nessun contatto riconosciuto. Esporta da Google Contatti in formato Google CSV o vCard."};
@@ -355,19 +515,20 @@ $("file").onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileRe
 const shift=n=>{const d=new Date(day()+"T12:00");d.setDate(d.getDate()+n);$("date").value=iso(d);render()};
 $("prev").onclick=()=>shift(-1);$("next").onclick=()=>shift(1);$("date").onchange=render;
 function tick(){const d=new Date();$("clk").textContent=hm(d.getHours()*60+d.getMinutes());$("cd").textContent=d.toLocaleDateString("it-IT",{day:"2-digit",month:"2-digit",year:"2-digit"});placeNow();
-  const sg=S.res.filter(isLate).map(r=>r.id).join();
+  const sg=S.res.filter(isLate).map(r=>r.id).join()+"|"+Math.floor(nowM()/15);
   if(sg!==lateSig){lateSig=sg;if(view!=="set"&&!$("dlg").open&&!document.querySelector(".bar[style*=translate]"))render()}}
-load();$("date").value=iso(new Date());render();tick();setInterval(tick,30000);
+load();if(migrateTables())save();$("date").value=iso(new Date());render();tick();setInterval(tick,30000);
 let drag=null,wasDrag=false,tt;
 function toast(msg,undo){$("tm").textContent=msg;$("tu").onclick=()=>{undo();$("toast").hidden=true};$("toast").hidden=false;clearTimeout(tt);tt=setTimeout(()=>$("toast").hidden=true,7000)}
 $("main").addEventListener("pointerdown",e=>{
   const b=e.target.closest(".bar");if(!b||e.button>0)return;
-  drag={b,id:b.dataset.r,from:b.parentElement.dataset.t,x:e.clientX,y:e.clientY,on:false};
+  drag={b,id:b.dataset.r,from:b.parentElement.dataset.t,x:e.clientX,y:e.clientY,on:false,rs:!!e.target.closest(".rs"),w:b.offsetWidth};
   try{b.setPointerCapture(e.pointerId)}catch(x){}
 });
 addEventListener("pointermove",e=>{
   if(!drag)return;const dx=e.clientX-drag.x,dy=e.clientY-drag.y;
   if(!drag.on){if(Math.hypot(dx,dy)<6)return;drag.on=true;Object.assign(drag.b.style,{zIndex:9,opacity:.85,boxShadow:"0 4px 14px #0006"})}
+  if(drag.rs){drag.b.style.width=Math.max(24,drag.w+dx)+"px";return}
   drag.b.style.transform=`translate(${dx}px,${dy}px)`;
 });
 addEventListener("pointercancel",()=>{if(drag){drag=null;render()}});
@@ -376,15 +537,17 @@ addEventListener("pointerup",e=>{
   wasDrag=true;setTimeout(()=>wasDrag=false,60);
   const i=S.res.findIndex(x=>x.id===d.id);if(i<0){render();return}
   const r=S.res[i],prev=JSON.parse(JSON.stringify(r));
+  if(d.rs){r.dur=Math.max(15,Math.min(480,Math.round((d.w+(e.clientX-d.x))/PX/15)*15));save();render();toast(`${r.name}: durata ${fmtDur(r.dur)}`,()=>{const j=S.res.findIndex(x=>x.id===prev.id);if(j>=0)S.res[j]=prev;save();render()});return}
   d.b.style.display="none";const el=document.elementFromPoint(e.clientX,e.clientY);d.b.style.display="";
   const row=el&&el.closest(".cells");
   const nt=Math.max(START,Math.min(END-15,mins(r.time)+Math.round((e.clientX-d.x)/PX/15)*15));
   r.time=hm(nt);
   if(row&&row.dataset.t!==d.from){const t=row.dataset.t,cur=tids(r);
-    r.tbs=!t?[]:(!d.from||!cur.length?[t]:[...new Set(cur.map(id=>id===d.from?t:id))]);r.table=r.tbs[0]||""}
+    const nt=!t?[]:(!d.from||!cur.length?[t]:[...new Set(cur.map(id=>id===d.from?t:id))]);
+    if(nt.length>1&&nt.some(id=>(S.tables.find(x=>x.id===id)||{}).nojoin)){d.bad=true}else{r.tbs=nt;r.table=nt[0]||"";r.lock=nt.length>0}}
   const clash=tids(r).length&&S.res.some(x=>x.id!==r.id&&x.date===r.date&&tids(x).some(id=>tids(r).includes(id))&&mins(x.time)<mins(r.time)+dur(r)&&mins(r.time)<mins(x.time)+dur(x));
   save();render();
-  toast(`${r.name}: ${r.time}, ${tids(r).length?"tavolo "+tnames(r):"da assegnare"}${clash?" · attenzione, tavolo già occupato":""}`,()=>{const j=S.res.findIndex(x=>x.id===prev.id);if(j>=0)S.res[j]=prev;save();render()});
+  toast(`${r.name}: ${r.time}, ${tids(r).length?"tavolo "+tnames(r):"da assegnare"}${clash?" · attenzione, tavolo già occupato":""}${d.bad?" · tavolo non unibile, non spostato":""}`,()=>{const j=S.res.findIndex(x=>x.id===prev.id);if(j>=0)S.res[j]=prev;save();render()});
 });
 initDb();
 addEventListener("load",()=>{if(view==="tl")render()});
